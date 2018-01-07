@@ -1,0 +1,3 @@
+## Why grub don't operate correctly
+apt-get install grub-pc-bin
+xorriso is installed (xorriso or libisoburn package)

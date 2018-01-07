@@ -1,0 +1,22 @@
+[package]
+name = "takos"
+version = "0.1.0"
+authors = ["Nathan Leloup <nathan.leloup.t@gmail.com"]
+
+[lib]
+path = "kernel/lib.rs"
+crate-type = ["staticlib"]
+
+[dependencies]
+rlibc = "1.0.0"
+volatile = "0.2.3"
+spin = "0.4.5"
+multiboot2 = "0.3.2"
+
+# The development profile, used for `cargo build`.
+#[profile.dev]
+#panic = "abort"
+
+# The release profile, used for `cargo build --release`.
+#[profile.release]
+#panic = "abort"
