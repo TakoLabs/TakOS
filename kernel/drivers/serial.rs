@@ -41,7 +41,7 @@ impl Serial {
 	}
 
 	pub fn write_byte(&mut self, c: u8) {
-		if(!self.isInit) { self.initialize(); }
+		if !self.isInit { self.initialize(); }
 		let mut com1: Port<u8> = unsafe { Port::new(PORT_COM1) };
 		com1.write(c);
 	}
