@@ -24,7 +24,7 @@ struct CascadedPics {
 }
 
 impl CascadedPics {
-    unsafe fn new(offset_master: u8, offset_slave: u8) -> CascadedPics {
+    const unsafe fn new(offset_master: u8, offset_slave: u8) -> CascadedPics {
         CascadedPics {
             pics: [
                 Pic::new(offset_master, 0x20, 0x21),
