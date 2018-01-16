@@ -10,7 +10,7 @@ struct Pic {
 }
 
 impl Pic {
-	unsafe fn new(offset: u8, command_port: u8, data_port: u8) -> Pic {
+	unsafe fn new(offset: u8, command_port: u16, data_port: u16) -> Pic {
         Pic {
             offset: offset,
             command: UnsafePort::new(command_port),
