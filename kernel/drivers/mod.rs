@@ -1,6 +1,3 @@
 #[macro_use]
-pub mod vga;
-#[macro_use]
-pub mod serial;
-pub mod io;
+pub mod text_memory;
 pub mod pic;

@@ -1,3 +1,5 @@
 ## Why grub don't operate correctly
 apt-get install grub-pc-bin
 xorriso is installed (xorriso or libisoburn package)
+
+"Cannot set up guest memory" error, because you ask more ram to qemu than you have on your computer

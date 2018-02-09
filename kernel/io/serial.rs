@@ -1,8 +1,9 @@
+// TMP for DEBUGGING
 use core::fmt;
 use core::ptr::Unique;
 use spin::Mutex;
 use volatile::Volatile;
-use drivers::io::{Port};
+use super::{Port, Io};
 
 
 const PORT_COM1: u16 = 0x3F8;
@@ -35,7 +36,7 @@ impl Serial {
 		com1_1.write(0x00);
 		com1_3.write(0x03);
 		com1_2.write(0xC7);
-		com1_4.write(0x08);	
+		com1_4.write(0x08);
 
 		self.isInit = true;
 	}
@@ -69,7 +70,7 @@ pub fn log(args: fmt::Arguments) {
 
 macro_rules! log {
     ($($arg:tt)*) => ({
-        drivers::serial::log(format_args!($($arg)*));
+        io::serial::log(format_args!($($arg)*));
     });
 }
 

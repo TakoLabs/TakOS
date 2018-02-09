@@ -1,21 +1,25 @@
-use drivers::io::{Port, UnsafePort};
+use io::{Port, Io};
 use spin::Mutex;
 
 static PICS: Mutex<CascadedPics> = Mutex::new(unsafe { CascadedPics::new(0x20, 0x28) });
 
 struct Pic {
     offset: u8,
-    command: UnsafePort<u8>,
-    data: UnsafePort<u8>
+    command: Port<u8>,
+    data: Port<u8>
 }
 
 impl Pic {
-	unsafe fn new(offset: u8, command_port: u16, data_port: u16) -> Pic {
+	const unsafe fn new(offset: u8, command_port: u16, data_port: u16) -> Pic {
         Pic {
             offset: offset,
-            command: UnsafePort::new(command_port),
-            data: UnsafePort::new(data_port)
+            command: Port::new(command_port),
+            data: Port::new(data_port)
         }
+    }
+
+    unsafe fn end_of_interrupt(&mut self) {
+        self.command.write(0x20);
     }
 }
 
@@ -34,16 +38,12 @@ impl CascadedPics {
     }
 
     unsafe fn initialize(&mut self) {
-
-
         // Writing to these ports create a small delay.
         // We need todo like these because we don't have access to any timer.
         let mut wait_port: Port<u8> = Port::new(0x80);
         let mut wait = || { wait_port.write(0) };
 
-        // Save our original interrupt masks, because I'm too lazy to
-        // figure out reasonable values.  We'll restore these when we're
-        // done.
+        // Save our original interrupt masks. We'll restore these when we're done.
         let saved_mask1 = self.pics[0].data.read();
         let saved_mask2 = self.pics[1].data.read();
 

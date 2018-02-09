@@ -9,17 +9,24 @@ extern crate volatile;
 extern crate spin;
 extern crate multiboot2;
 
-#[macro_use]
-mod drivers;
+pub mod arch;
+pub use arch::*;
 
-use drivers::vga;
-use drivers::pic;
+#[macro_use]
+pub mod io;
+pub use io::*;
+
+#[macro_use]
+pub mod drivers;
+pub use drivers::*;
 
 #[no_mangle]
 pub extern fn kmain(multiboot_info_addr: usize) {
 	// ATTENTION: we have a very small stack and no guard page
 
-	vga::clear_screen();
+	let test: Port<u8> = Port::new(0x20);
+
+	/*vga::clear_screen();
 	info!("TakOS starting...");
 	println!("TakOS starting...");
 
@@ -50,8 +57,8 @@ pub extern fn kmain(multiboot_info_addr: usize) {
 
 	println!("Initializing interrupt...");
 	info!("Initializing interrupt...");
-	info!("initialize pics...");
-	pic::initialize();
+	info!(" initialize pics...");
+	unsafe { pic::initialize(); }*/
 
 	loop{}
 }

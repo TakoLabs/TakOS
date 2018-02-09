@@ -52,7 +52,7 @@ impl ColorCode {
 #[repr(C)]
 struct Character {
     c: u8,
-    color_code: ColorCode 
+    color_code: ColorCode
 }
 
 struct Buffer {
@@ -65,7 +65,7 @@ pub struct Writer {
     buffer: Unique<Buffer>,
 }
 
-impl Writer { 
+impl Writer {
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
@@ -134,7 +134,7 @@ impl fmt::Write for Writer {
 
 macro_rules! print {
     ($($arg:tt)*) => ({
-        $crate::vga::print(format_args!($($arg)*));
+        $crate::text_memory::print(format_args!($($arg)*));
     });
 }
 
