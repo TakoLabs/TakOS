@@ -1,18 +1,18 @@
 use core::fmt;
-use core::ptr::Unique;
 use spin::Mutex;
 use volatile::Volatile;
-
+use lazy_static::lazy_static;
 
 const BUFFER_HEIGHT: usize = 25;
 const BUFFER_WIDTH: usize = 80;
 
-
-pub static WRITER: Mutex<Writer> = Mutex::new(Writer {
-    column_position: 0,
-    color_code: ColorCode::new(Color::LightGreen, Color::Black),
-    buffer: unsafe { Unique::new(0xb8000 as *mut _) },
-});
+lazy_static! {
+	pub static ref WRITER: Mutex<Writer> = Mutex::new(Writer {
+	    column_position: 0,
+	    color_code: ColorCode::new(Color::LightGreen, Color::Black),
+	    buffer: unsafe { &mut *(0xb8000 as *mut Buffer) },
+	});
+}
 
 
 #[allow(dead_code)]
@@ -62,7 +62,7 @@ struct Buffer {
 pub struct Writer {
     column_position: usize,
     color_code: ColorCode,
-    buffer: Unique<Buffer>,
+    buffer: &'static mut Buffer,
 }
 
 impl Writer {
@@ -78,7 +78,7 @@ impl Writer {
                 let col = self.column_position;
 
                 let color_code = self.color_code;
-                self.buffer().chars[row][col].write(Character {
+                self.buffer.chars[row][col].write(Character {
                     c: byte,
                     color_code: color_code,
                 });
@@ -94,16 +94,11 @@ impl Writer {
         }
     }
 
-    fn buffer(&mut self) -> &mut Buffer {
-        unsafe{ self.buffer.as_mut() }
-    }
-
     fn new_line(&mut self) {
         for row in 1..BUFFER_HEIGHT {
             for col in 0..BUFFER_WIDTH {
-                let buffer = self.buffer();
-                let character = buffer.chars[row][col].read();
-                buffer.chars[row - 1][col].write(character);
+                let character = self.buffer.chars[row][col].read();
+                self.buffer.chars[row - 1][col].write(character);
             }
         }
 
@@ -118,7 +113,7 @@ impl Writer {
         };
 
         for col in 0..BUFFER_WIDTH {
-            self.buffer().chars[row][col].write(blank);
+            self.buffer.chars[row][col].write(blank);
         }
     }
 }
@@ -134,7 +129,7 @@ impl fmt::Write for Writer {
 
 macro_rules! print {
     ($($arg:tt)*) => ({
-        $crate::text_memory::print(format_args!($($arg)*));
+        $crate::vga::print(format_args!($($arg)*));
     });
 }
 

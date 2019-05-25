@@ -1,6 +1,5 @@
 // TMP for DEBUGGING
 use core::fmt;
-use core::ptr::Unique;
 use spin::Mutex;
 use volatile::Volatile;
 use super::{Port, Io};

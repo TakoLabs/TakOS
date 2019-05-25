@@ -39,7 +39,7 @@ impl CascadedPics {
 
     unsafe fn initialize(&mut self) {
         // Writing to these ports create a small delay.
-        // We need todo like these because we don't have access to any timer.
+        // We need to do like these because we don't have access to any timer.
         let mut wait_port: Port<u8> = Port::new(0x80);
         let mut wait = || { wait_port.write(0) };
 

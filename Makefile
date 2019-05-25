@@ -41,10 +41,8 @@ $(KERNEL):
 	mkdir -p $(BIN)
 	mkdir -p $(BUILD)
 	@echo "Building Kernel..."
-	cp $(CONFIG)/x86_64-takos.json .
-	xargo build --target=$(ARCH)-takos
-	rm x86_64-takos.json
-	cp target/$(ARCH)-takos/debug/libtakos.a $(BUILD)
+	cargo xbuild
+	cp target/$(ARCH)-takos/debug/libtakos.a $(BUILD)/libtakos.a
 	ld -n --gc-sections -o $(KERNEL) -T $(CONFIG)/linker.ld $(BUILD)/multiboot_header.o $(BUILD)/boot.o $(BUILD)/long_mode_init.o $(BUILD)/libtakos.a
 
 $(TakOS): $(KERNEL)
@@ -58,7 +56,7 @@ $(TakOS): $(KERNEL)
 qemu: $(TakOS)
 	mkdir -p $(LOGS)
 	qemu-system-$(ARCH) -curses -m 8G -serial file:$(LOGS)/serial-$(shell date +"%d%m%y-%Hh%Mm%Ss").log -cdrom $^
-
+#qemu-system-x86_64 -curses -m 8G -serial file:logs/serial.log -cdrom bin/x86_64/TakOS.iso
 
 clean:
 	make -C ./boot clean

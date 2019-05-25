@@ -1,0 +1,2 @@
+[build]
+target = "cfg/x86_64-takos.json"

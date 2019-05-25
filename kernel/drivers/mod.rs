@@ -1,3 +1,3 @@
 #[macro_use]
-pub mod text_memory;
+pub mod vga;
 pub mod pic;
